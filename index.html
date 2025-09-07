@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Birthday Post Maker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Pacifico&family=Anton&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js" integrity="sha512-7tWCg0J26PzOEVbV2p5M2u/2iQFoP5H3K1Q/wIeG3KpqWJbILu9LwG32Ih00A2k44Bf50xBfgi1Lz8/k1Y5pQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.17.0",
+    "react-icons": "https://aistudiocdn.com/react-icons@^5.5.0",
+    "react-icons/": "https://aistudiocdn.com/react-icons@^5.5.0/"
+  }
+}
+</script>
+<style>
+  /* --- Advanced CSS Enhancements --- */
+  
+  /* General Enhancements */
+  .container-glow {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), 0 0 60px rgba(231, 60, 126, 0.2);
+  }
+
+  .input-focus-effect {
+    transition: all 0.3s ease;
+  }
+  .input-focus-effect:focus {
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.4);
+    border-color: #6366f1 !important;
+  }
+
+  /* Card Hover & Selection Effects */
+  .card-hover-effect {
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .card-hover-effect:hover {
+    transform: perspective(1000px) rotateY(5deg) rotateX(5deg) scale3d(1.05, 1.05, 1.05);
+  }
+
+  @keyframes glow-border {
+    0% { border-color: #ec4899; box-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899, inset 0 0 5px #ec4899; }
+    50% { border-color: #f472b6; box-shadow: 0 0 15px #f472b6, 0 0 30px #f472b6, inset 0 0 10px #f472b6; }
+    100% { border-color: #ec4899; box-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899, inset 0 0 5px #ec4899; }
+  }
+
+  .selected-card-glow {
+    animation: glow-border 2s infinite ease-in-out;
+  }
+  
+  /* Button Enhancements */
+  .shiny-button {
+    position: relative;
+    overflow: hidden;
+  }
+  .shiny-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: all 0.7s;
+  }
+  .shiny-button:hover::before {
+    left: 100%;
+  }
+
+  /* Birthday Post Advanced CSS */
+  @keyframes move-twink-back { from { background-position: 0 0; } to { background-position: -10000px 5000px; } }
+  @keyframes move-clouds-back { from { background-position: 0 0; } to { background-position: 10000px 0; } }
+  .stars, .twinkling, .clouds { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; display: block; }
+  .stars { background: #000 url(https://www.script-tutorials.com/demos/360/images/stars.png) repeat top center; z-index: 0; }
+  .twinkling { background: transparent url(https://www.script-tutorials.com/demos/360/images/twinkling.png) repeat top center; z-index: 1; animation: move-twink-back 200s linear infinite; }
+  .clouds { background: transparent url(https://www.script-tutorials.com/demos/360/images/clouds.png) repeat top center; z-index: 2; animation: move-clouds-back 200s linear infinite; opacity: 0.4; }
+  
+  @keyframes bubble-rise { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-80vh); opacity: 0; } }
+  .bubbles-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; overflow: hidden; }
+  .bubble { position: absolute; bottom: -50px; background-color: rgba(255, 255, 255, 0.2); border-radius: 50%; animation-name: bubble-rise; animation-timing-function: linear; animation-iteration-count: infinite; }
+  
+  @keyframes sun-rays { 0% { transform: rotate(0deg); opacity: 0.1; } 50% { opacity: 0.2; } 100% { transform: rotate(360deg); opacity: 0.1; } }
+  .sun-rays { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,220,0.2) 0%, rgba(255,255,220,0) 60%); animation: sun-rays 60s linear infinite; }
+
+  @keyframes photo-glow { 0% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.6), 0 0 16px rgba(255, 255, 255, 0.4); } 50% { box-shadow: 0 0 16px rgba(255, 255, 255, 0.8), 0 0 32px rgba(255, 255, 255, 0.6); } 100% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.6), 0 0 16px rgba(255, 255, 255, 0.4); } }
+  .friend-photo-glow { animation: photo-glow 3s infinite ease-in-out; }
+
+  /* --- Original Styles --- */
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #1a1a2e; /* Fallback background */
+  }
+  .animated-gradient {
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+  }
+
+  @keyframes gradient {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+  .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  }
+  .font-poppins { font-family: 'Poppins', sans-serif; }
+  .font-pacifico { font-family: 'Pacifico', cursive; }
+  .font-anton { font-family: 'Anton', sans-serif; }
+</style>
+</head>
+  <body class="animated-gradient">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "name": "AI Birthday Post Maker",
+  "description": "Create stunning, shareable birthday posts for your friends. This app automatically finds famous people who share the same birthday today using Google's Gemini AI, and combines them with your friend's photo into a beautiful, story-ready image.",
+  "requestFramePermissions": []
+}
